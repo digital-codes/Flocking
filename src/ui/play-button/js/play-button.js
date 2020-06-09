@@ -239,7 +239,7 @@ var fluid = fluid || require("infusion"),
      * fading in and out appropriately so as to avoid clicks.
      */
     fluid.defaults("flock.ui.enviroPlayButton", {
-        gradeNames: ["flock.ui.playButton"],
+        gradeNames: ["flock.environmentHolder", "flock.ui.playButton"],
 
         fadeDuration: 0.3,
         resetDelay: 0.0,
@@ -249,7 +249,7 @@ var fluid = fluid || require("infusion"),
         },
 
         components: {
-            enviro: "{enviro}",
+            enviro: "{flock.enviro}",
 
             scheduler: {
                 type: "flock.ui.enviroPlayButton.scheduler",

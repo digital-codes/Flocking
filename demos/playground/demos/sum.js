@@ -1,4 +1,4 @@
-/*global flock*/
+/*global flock, playground*/
 
 // Adds together a bank of sine oscillators to make
 // a rudimentary clarinet tone with additive synthesis.
@@ -71,7 +71,7 @@ var synth = flock.synth({
     }
 });
 
-flock.environment.scheduler.schedule({
+playground.enviro.scheduler.schedule({
     type: "repeat",
     freq: 1.0,
     callback: function () {

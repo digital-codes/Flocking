@@ -29,18 +29,15 @@
     "grunt-contrib-jshint": "2.1.0",
     "sheep-benchmark": "colinbdclark/sheep.js",
     "requirejs": "2.3.6",
-    "testem": "2.15.1"
+    "testem": "3.0.2"
   },
   "dependencies": {
-    "bergson": "0.15.0-dev.20190108T045554Z.6728e52.gh-15",
+    "bergson": "0.14.1",
     "jquery": "3.4.1",
-    "infusion": "3.0.0-dev.20190328T144119Z.ec44dbfab",
+    "infusion": "3.0.0-dev.20191107T164711Z.332e92c33.FLUID-6148",
     "codemirror-infusion": "2.2.1",
     "jsplumb": "1.7.9",
     "dagre": "0.8.4",
-    "infusion": "3.0.0-dev.20181204T213346Z.2ca90f6e6",
-    "jquery": "3.3.1",
-    "jsplumb": "1.7.9",
     "normalize.css": "8.0.1"
   },
   "scripts": {

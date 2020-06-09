@@ -18,8 +18,15 @@ var fluid = fluid || require("infusion"),
 
     var QUnit = fluid.registerNamespace("QUnit"),
         $ = fluid.registerNamespace("jQuery"),
-        environment = flock.silentEnviro(),
-        sampleRate = environment.audioSystem.model.rates.audio;
+        enviro;
+
+        QUnit.begin(function () {
+            enviro = flock.silentEnviro();
+        });
+
+        QUnit.done(function () {
+            enviro.destroy();
+        });
 
     QUnit.module("flock.ugen.change");
 
@@ -32,7 +39,7 @@ var fluid = fluid || require("infusion"),
     };
 
     var makeUGen = function (def) {
-        return flock.parse.ugenForDef(fluid.copy(def), undefined, {
+        return flock.parse.ugenForDef(fluid.copy(def), enviro, {
             audioSettings: {
                 rates: {
                     audio: 48000
@@ -109,7 +116,13 @@ var fluid = fluid || require("infusion"),
 
     QUnit.test("gh-136: sequencer shouldn't fail when setting durations and values together.", function () {
         var s = flock.synth({
-            synthDef: flock.test.sequencer.synthDef
+            synthDef: flock.test.sequencer.synthDef,
+
+            components: {
+                enviro: {
+                    type: "flock.silentEnviro"
+                }
+            }
         });
 
         var change = {
@@ -125,12 +138,19 @@ var fluid = fluid || require("infusion"),
     QUnit.test("gh-136: sequencer shouldn't fail when creating model synth", function () {
         var s = flock.modelSynth({
             synthDef: flock.test.sequencer.synthDef,
+
             model: {
                 inputs: {
                     sequencer: {
                         durations: [5, 6, 7],
                         values: [2, 2, 3]
                     }
+                }
+            },
+
+            components: {
+                enviro: {
+                    type: "flock.silentEnviro"
                 }
             }
         });
@@ -156,7 +176,13 @@ var fluid = fluid || require("infusion"),
         QUnit.expect(3);
 
         var s = flock.synth({
-            synthDef: flock.test.sequencer.synthDef
+            synthDef: flock.test.sequencer.synthDef,
+
+            components: {
+                enviro: {
+                    type: "flock.silentEnviro"
+                }
+            }
         });
         s.set("sequencer.durations", [5, 6, 7]);
 
@@ -178,7 +204,7 @@ var fluid = fluid || require("infusion"),
     });
 
     QUnit.test("gh-137: Update to shorter sequence", function () {
-        var sampleDur = 1.0 / flock.environment.audioSystem.model.rates.audio,
+        var sampleDur = 1.0 / enviro.audioSystem.model.rates.audio,
             durations = [sampleDur * 10, sampleDur * 10],
             values = [1, 2];
 
@@ -193,6 +219,12 @@ var fluid = fluid || require("infusion"),
                 rate: "audio",
                 durations: durations,
                 values: values
+            },
+
+            components: {
+                enviro: {
+                    type: "flock.silentEnviro"
+                }
             }
         });
 
@@ -243,7 +275,14 @@ var fluid = fluid || require("infusion"),
     var seqUGenDef = {
         ugen: "flock.ugen.sequence",
         inputs: {
-            freq: (sampleRate / 64) * 4,
+            freq: {
+                ugen: "flock.ugen.math",
+                source: {
+                    ugen: "flock.ugen.sampleRate",
+                    mul: 0.015625
+                },
+                mul: 4
+            },
             start: 0.0,
             loop: 0.0,
             values: [12, 24, 48]
@@ -252,7 +291,7 @@ var fluid = fluid || require("infusion"),
 
     QUnit.test("Demand rate", function () {
         seqUGenDef.rate = "demand";
-        var seq = flock.parse.ugenDef(seqUGenDef);
+        var seq = flock.parse.ugenDef(seqUGenDef, enviro);
 
         testSequences({
             ugen: seq,
@@ -285,10 +324,8 @@ var fluid = fluid || require("infusion"),
     });
 
     QUnit.test("Audio rate", function () {
-        flock.init();
-
         seqUGenDef.rate = "audio";
-        var seq = flock.parse.ugenDef(seqUGenDef);
+        var seq = flock.parse.ugenDef(seqUGenDef, enviro);
 
         testSequences({
             ugen: seq,
@@ -345,6 +382,4 @@ var fluid = fluid || require("infusion"),
             ]
         });
     });
-
-    environment.destroy();
 }());

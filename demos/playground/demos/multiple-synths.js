@@ -1,4 +1,4 @@
-/*global flock, $*/
+/*global $, flock, playground*/
 
 /*
  * Multiple synths playing back simultaneously, playing shifting chords.
@@ -23,7 +23,7 @@ var fundamental = 440,
     baseIntervals = [1/1, 5/4, 3/2],
     weightedIntervals = baseIntervals.concat([4/3, 6/5, 7/6, 2/1]).concat(baseIntervals),
     synths = makeIntervallicSynths(fundamental, baseIntervals),
-    scheduler = flock.environment.scheduler;
+    scheduler = playground.enviro.scheduler;
 
 // Every second, change one of the intervals by randomly choosing a synth
 // and assigning it a new frequency from the list of intervals.

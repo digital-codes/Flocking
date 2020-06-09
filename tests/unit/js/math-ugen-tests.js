@@ -17,15 +17,18 @@ var fluid = fluid || require("infusion"),
 
     var QUnit = fluid.registerNamespace("QUnit");
 
-    var environment = flock.init(),
-        sampleRate = environment.audioSystem.model.rates.audio;
-
     QUnit.module("flock.ugen.math() tests");
 
     var testMath = function (synthDef, expected, msg) {
         synthDef.id = "math";
         var synth = flock.synth({
-            synthDef: synthDef
+            synthDef: synthDef,
+
+            components: {
+                enviro: {
+                    type: "flock.silentEnviro"
+                }
+            }
         });
         flock.evaluate.synth(synth);
         var math = synth.nodeList.namedNodes.math;
@@ -82,7 +85,9 @@ var fluid = fluid || require("infusion"),
                     ugen: "flock.ugen.sequence",
                     rate: "audio",
                     values: incBuffer,
-                    freq: sampleRate
+                    freq: {
+                        ugen: "flock.ugen.sampleRate"
+                    }
                 },
                 add: 3
             }
@@ -97,7 +102,9 @@ var fluid = fluid || require("infusion"),
             ugen: "flock.ugen.sequence",
             rate: "control",
             values: incBuffer,
-            freq: sampleRate
+            freq: {
+                ugen: "flock.ugen.sampleRate"
+            }
         };
         testMath(krArUGenDef, flock.generateBufferWithValue(64, 2), "Control rate source, control rate add.");
 
@@ -113,10 +120,11 @@ var fluid = fluid || require("infusion"),
     QUnit.module("flock.ugen.sum() tests");
 
     QUnit.test("flock.ugen.sum()", function () {
+        var enviro = flock.silentEnviro();
         var addBuffer = flock.test.generateSequence(0, 31),
-            one = flock.test.ugen.mock.make(addBuffer),
-            two = flock.test.ugen.mock.make(addBuffer),
-            three = flock.test.ugen.mock.make(addBuffer);
+            one = flock.test.ugen.mock.make(enviro, addBuffer),
+            two = flock.test.ugen.mock.make(enviro, addBuffer),
+            three = flock.test.ugen.mock.make(enviro, addBuffer);
 
         one.gen(32);
         two.gen(32);
@@ -126,7 +134,10 @@ var fluid = fluid || require("infusion"),
             sources: [one]
         };
 
-        var summer = flock.ugen.sum(inputs, new Float32Array(addBuffer.length));
+        var summer = flock.ugen.sum(inputs, new Float32Array(addBuffer.length),{
+            enviro: enviro
+        });
+
         summer.gen(32);
         QUnit.deepEqual(summer.output, new Float32Array(addBuffer),
             "With a single source, the output should be identical to the source input.");
@@ -138,6 +149,4 @@ var fluid = fluid || require("infusion"),
         QUnit.deepEqual(summer.output, new Float32Array(expected),
             "With three sources, the output consist of the inputs added together.");
     });
-
-    environment.destroy();
 }());

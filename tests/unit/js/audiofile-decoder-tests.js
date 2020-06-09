@@ -15,92 +15,175 @@ var fluid = fluid || require("infusion"),
 (function () {
     "use strict";
 
-    var QUnit = fluid.registerNamespace("QUnit");
     fluid.registerNamespace("flock.test");
 
-    var module = flock.test.module({
-        name: "flock.audio.decode.chunked() tests"
-    });
+    // TODO: Generalize and promote this to a core component?
+    fluid.defaults("flock.test.audioBufferDataURLReader", {
+        gradeNames: "fluid.component",
 
-    var audioFormatTestSpecs = [
-        {
-            name: "16 bit WAV file",
-            format: "wav",
-            src: flock.test.audio.triangleInt16WAV,
-            decoded: {
-                container: {
-                    id: "RIFF",
-                    size: 120,
-                    formatType: "WAVE"
-                },
-                format: {
-                    id: "fmt ",
-                    size: 16,
-                    audioFormatType: 1,
-                    numChannels: 1,
-                    numSampleFrames: 42,
-                    sampleRate: 44100,
-                    avgBytesPerSecond: 88200,
-                    blockAlign: 2,
-                    duration: 0.0009523809523809524,
-                    bitRate: 16
-                },
-                data: {
-                    id: "data",
-                    size: 84
-                }
+        invokers: {
+            read: {
+                funcName: "flock.test.audioBufferDataURLReader.read",
+                args: [
+                    "{arguments}.0", // src
+                    "{arguments}.1", // format
+                    "{that}"
+                ]
             }
         },
-        {
-            name: "16 bit AIFF file",
-            format: "aiff",
-            src: flock.test.audio.triangleInt16AIFF,
-            decoded: {
-                container: {
-                    id: "FORM",
-                    size: 130,
-                    formatType: "AIFF"
-                },
-                format: {
-                    id: "COMM",
-                    size: 18,
-                    numChannels: 1,
-                    numSampleFrames: 42,
-                    bitRate: 16,
-                    duration: 0.0009523809523809524,
-                    sampleRate: 44100.0
-                },
-                data: {
-                    id: "SSND",
-                    size: 92,
-                    offset: 0,
-                    blockSize: 0
-                }
+
+        events: {
+            afterRead: null,
+            afterDecoded: null
+        },
+
+        listeners: {
+            "afterRead.decode": {
+                funcName: "flock.test.audioBufferDataURLReader.decode",
+                args: [
+                    "{arguments}.0", // data buffer
+                    "{arguments}.1", // format
+                    "{that}"
+                ]
             }
         }
-    ];
+    });
 
-    var testAudioFileFormat = function (config) {
-        QUnit.asyncTest(config.name + ".", function () {
-            flock.file.readBufferFromDataUrl({
-                src: config.src,
-                success: function (dataBuffer) {
-                    var expected = config.decoded,
-                        actual = flock.audio.decode.chunked(dataBuffer, flock.audio.formats[config.format]);
-
-                    // Remove the sample data, since it's tested below.
-                    delete actual.data.channels;
-
-                    QUnit.deepEqual(actual, expected,
-                        "The decoded audio file info should contain valid container, format, and data structures.");
-                    QUnit.start();
-                }
-            });
+    flock.test.audioBufferDataURLReader.read = function (src, format, that) {
+        flock.file.readBufferFromDataUrl({
+            src: src,
+            success: function (dataBuffer) {
+                that.events.afterRead.fire(dataBuffer, format);
+            }
         });
     };
 
-    fluid.each(audioFormatTestSpecs, testAudioFileFormat);
+    flock.test.audioBufferDataURLReader.decode = function (dataBuffer, format, that) {
+        var decoded = flock.audio.decode.chunked(dataBuffer,
+            flock.audio.formats[format]);
 
+        that.events.afterDecoded.fire(decoded);
+    };
+
+    fluid.defaults("flock.test.audioFileDecoderTestEnvironment", {
+        gradeNames: "flock.test.testEnvironment",
+
+        components: {
+            decoder: {
+                type: "flock.test.audioBufferDataURLReader"
+            },
+
+            tester: {
+                type: "flock.test.audioFileDecoderTester"
+            }
+        }
+    });
+
+    fluid.defaults("flock.test.audioFileDecoderTester", {
+        gradeNames: "fluid.test.testCaseHolder",
+
+        modules: [
+            {
+                name: "flock.audio.decode.chunked() tests",
+                tests: [
+                    {
+                        name: "int 16 WAV file",
+                        expect: 1,
+                        sequence: [
+                            {
+                                func: "{decoder}.read",
+                                args: [
+                                    flock.test.audio.triangleInt16WAV,
+                                    "wav"
+                                ]
+                            },
+                            {
+                                event: "{decoder}.events.afterDecoded",
+                                listener: "flock.test.audioFileDecoderTester.testDecodedFileInfo",
+                                args: [
+                                    "{arguments}.0",
+                                    {
+                                        container: {
+                                            id: "RIFF",
+                                            size: 120,
+                                            formatType: "WAVE"
+                                        },
+                                        format: {
+                                            id: "fmt ",
+                                            size: 16,
+                                            audioFormatType: 1,
+                                            numChannels: 1,
+                                            numSampleFrames: 42,
+                                            sampleRate: 44100,
+                                            avgBytesPerSecond: 88200,
+                                            blockAlign: 2,
+                                            duration: 0.0009523809523809524,
+                                            bitRate: 16
+                                        },
+                                        data: {
+                                            id: "data",
+                                            size: 84
+                                        }
+                                    }
+                                ]
+                            },
+                        ]
+                    },
+                    {
+                        name: "16 bit AIFF file",
+                        expect: 1,
+                        sequence: [
+                            {
+                                func: "{decoder}.read",
+                                args: [
+                                    flock.test.audio.triangleInt16AIFF,
+                                    "aiff"
+                                ]
+                            },
+                            {
+                                event: "{decoder}.events.afterDecoded",
+                                listener: "flock.test.audioFileDecoderTester.testDecodedFileInfo",
+                                args: [
+                                    "{arguments}.0",
+                                    {
+                                        container: {
+                                            id: "FORM",
+                                            size: 130,
+                                            formatType: "AIFF"
+                                        },
+                                        format: {
+                                            id: "COMM",
+                                            size: 18,
+                                            numChannels: 1,
+                                            numSampleFrames: 42,
+                                            bitRate: 16,
+                                            duration: 0.0009523809523809524,
+                                            sampleRate: 44100.0
+                                        },
+                                        data: {
+                                            id: "SSND",
+                                            size: 92,
+                                            offset: 0,
+                                            blockSize: 0
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    });
+
+    flock.test.audioFileDecoderTester.testDecodedFileInfo = function (actual, expected) {
+        // TODO: Use the correct jqUnit tester for this.
+        delete actual.data.channels;
+
+        jqUnit.assertDeepEq("The decoded audio file info should contain valid container, format, and data structures.", expected, actual);
+    };
+
+    fluid.test.runTests("flock.test.audioFileDecoderTestEnvironment");
 
     var eightBitSampleSize = 42;
     var decoderTestSpecs = [
@@ -153,7 +236,7 @@ var fluid = fluid || require("infusion"),
         }
     ];
 
-    module = flock.test.module({
+    var module = flock.test.module({
         name: "flock.audio.decode() mixed decoder tests"
     });
 

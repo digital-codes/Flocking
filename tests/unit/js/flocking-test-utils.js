@@ -626,7 +626,7 @@ var fluid = fluid || require("infusion"),
         return that;
     };
 
-    flock.test.ugen.mock.make = function (output, rate, options) {
+    flock.test.ugen.mock.make = function (environment, output, rate, options) {
         options = options || {};
         if (typeof (output) === "function") {
             output = flock.generateBufferWithValue(64, output);
@@ -638,7 +638,7 @@ var fluid = fluid || require("infusion"),
             ugen: "flock.test.ugen.mock",
             rate: rate || flock.rates.AUDIO,
             options: options
-        });
+        }, environment);
     };
 
     flock.test.ugen.mock.makeRandomInputGenerator = function (inputSpec, defaultScale, round) {

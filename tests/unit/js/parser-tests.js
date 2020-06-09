@@ -38,7 +38,7 @@ var fluid = fluid || require("infusion"),
             }
         };
 
-        var actual = flock.parse.ugenForDef(def);
+        var actual = flock.parse.ugenForDef(def, environment);
         QUnit.equal(actual.inputs.freq.inputs.value, 299,
             "A value input should not be expanded.");
         jqUnit.assertDeepEq("A table input should not be expanded.",
@@ -66,7 +66,7 @@ var fluid = fluid || require("infusion"),
             }
         };
 
-        var parsed = flock.parse.ugenForDef(ugenDef);
+        var parsed = flock.parse.ugenForDef(ugenDef, environment);
         QUnit.equal(parsed.rate, flock.rates.CONTROL,
             "A compressed control rate should be expanded to its full value.");
         QUnit.equal(parsed.inputs.freq.rate, flock.rates.AUDIO,
@@ -83,7 +83,7 @@ var fluid = fluid || require("infusion"),
             phase: 1.0
         };
 
-        var ugen = flock.parse.ugenForDef(sinOscDef);
+        var ugen = flock.parse.ugenForDef(sinOscDef, environment);
         QUnit.equal(ugen.rate, flock.rates.AUDIO,
             "The rate option should be supplied by the ugen's defaults.");
         QUnit.equal(ugen.inputs.freq.model.value, 440,

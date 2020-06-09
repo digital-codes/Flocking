@@ -17,7 +17,7 @@ var fluid = fluid || require("infusion"),
 
     var QUnit = fluid.registerNamespace("QUnit");
 
-    flock.test.module({
+    var module = flock.test.module({
         name: "flock.ugen.value performance tests"
     });
 
@@ -83,12 +83,12 @@ var fluid = fluid || require("infusion"),
             "Generating and outputting 1 second of stereo signal from flock.ugen.value should take less than 7 ms.");
     });
 
-    flock.test.module({
+    module = flock.test.module({
         name: "flock.ugen.sinOsc performance tests"
     });
 
     var checkUGen = function (ugenDef, expectedCeil, msg) {
-        var ugen = flock.parse.ugenForDef(ugenDef),
+        var ugen = flock.parse.ugenForDef(ugenDef, module.environment),
             ugens = [ugen],
             inputName,
             input,

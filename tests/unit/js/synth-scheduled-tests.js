@@ -27,10 +27,16 @@ var fluid = fluid || require("infusion"),
                 id: "oscillator",
                 ugen: "flock.ugen.sin",
                 freq: 1
+            },
+
+            components: {
+                enviro: {
+                    type: "flock.silentEnviro"
+                }
             }
         });
 
-        QUnit.equal(s.audioSettings.rates.scheduled, 60,
+        QUnit.equal(s.model.audioSettings.rates.scheduled, 60,
             "The frame rate should have been specified as the synth's scheduled rate.");
         QUnit.equal(s.get("oscillator").model.sampleRate, 60,
             "The unit generator should have its sample rate set to 60 fps.");

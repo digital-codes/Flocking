@@ -13,10 +13,6 @@ var fluid = fluid || require("infusion"),
 (function () {
     "use strict";
 
-    // TODO: Declarativize.
-    flock.init({
-        chans: flock.ALL_CHANNELS
-    });
     flock.debug.failHard = false;
 
     /**************
@@ -33,7 +29,18 @@ var fluid = fluid || require("infusion"),
 
         components: {
             enviro: {
-                type: "flock.enviro.withScheduler"
+                type: "flock.enviro.withScheduler",
+                options: {
+                    components: {
+                        audioSystem: {
+                            options: {
+                                model: {
+                                    chans: flock.ALL_CHANNELS
+                                }
+                            }
+                        }
+                    }
+                }
             },
 
             demos: {

@@ -64,7 +64,7 @@ var fluid = fluid || require("infusion"),
             inputs: {
                 freq: 4
             }
-        });
+        }, environment);
         lfNoise.output = new Float32Array(sampleRate * 2);
 
         // One second worth of samples. The resulting buffer should contain 4 unique values.
@@ -87,7 +87,7 @@ var fluid = fluid || require("infusion"),
             options: {
                 interpolation: "linear"
             }
-        });
+        }, environment);
         lfNoise.output = new Float32Array(sampleRate);
 
         lfNoise.gen(sampleRate);
@@ -102,7 +102,7 @@ var fluid = fluid || require("infusion"),
     flock.test.noise.ugenInAudioRange = function (ugenName) {
         var pink = flock.parse.ugenDef({
             ugen: ugenName
-        }, undefined, {
+        }, environment, {
             audioSettings: {
                 blockSize: 100000
             }
@@ -179,9 +179,15 @@ var fluid = fluid || require("infusion"),
 
     QUnit.test("flock.ugen.dust", function () {
         var density = 1.0;
+
+        var densityUGen = flock.ugen.value({value: density}, new Float32Array(sampleRate), {enviro: environment});
+
         var dust = flock.ugen.dust({
-            density: flock.ugen.value({value: density}, new Float32Array(sampleRate))
-        }, new Float32Array(sampleRate));
+            density: densityUGen
+        }, new Float32Array(sampleRate), {
+            enviro: environment
+        });
+
         dust.gen(sampleRate);
         var buffer = dust.output;
 
@@ -196,7 +202,7 @@ var fluid = fluid || require("infusion"),
 
         // And now try a density of 200.
         density = 200;
-        dust.inputs.density = flock.ugen.value({value: density}, new Float32Array(sampleRate));
+        dust.inputs.density = flock.ugen.value({value: density}, new Float32Array(sampleRate), {enviro: environment});
         checkDensity(dust, density);
     });
 

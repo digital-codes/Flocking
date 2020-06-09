@@ -17,13 +17,17 @@ var fluid = fluid || require("infusion"),
 
     var QUnit = fluid.registerNamespace("QUnit");
 
-    var environment = flock.silentEnviro(),
-        sampleRate = environment.audioSystem.model.rates.audio;
-
     QUnit.module("flock.ugen.gate() tests");
 
     fluid.defaults("flock.test.gateSynth", {
         gradeNames: ["flock.synth"],
+
+        components: {
+            enviro: {
+                type: "flock.silentEnviro"
+            }
+        },
+
         synthDef: {
             id: "gate",
             ugen: "flock.ugen.gate",
@@ -143,7 +147,10 @@ var fluid = fluid || require("infusion"),
                     loop: 1.0,
                     rate: "control",
                     values: [1, 2, 3, 4],
-                    freq: sampleRate / 64
+                    freq: {
+                        ugen: "flock.ugen.sampleRate",
+                        mul: 0.015625
+                    }
                 },
                 trigger: 0.0
             },
@@ -215,7 +222,9 @@ var fluid = fluid || require("infusion"),
                     loop: 1.0,
                     rate: "audio",
                     values: outputBuffer,
-                    freq: sampleRate
+                    freq: {
+                        ugen: "flock.ugen.sampleRate"
+                    }
                 },
                 trigger: {
                     ugen: "flock.test.ugen.mock",
@@ -261,6 +270,4 @@ var fluid = fluid || require("infusion"),
 
         runLatchTests(testSpec);
     });
-
-    environment.destroy();
 }());

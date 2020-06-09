@@ -35,7 +35,7 @@ var fluid = fluid || require("infusion"),
             options: {
                 sampleRate: sampleRate
             }
-        });
+        }, environment);
     };
 
     var paddedBuffer = function (values, length) {
@@ -124,7 +124,7 @@ var fluid = fluid || require("infusion"),
 
     var makeAndPrimeOsc = function (ugenType, outputSize) {
         basicDef.ugen = ugenType;
-        var ug = flock.parse.ugenForDef(basicDef);
+        var ug = flock.parse.ugenForDef(basicDef, environment);
         ug.output = new Float32Array(outputSize);
         ug.gen(outputSize);
         return ug;
@@ -179,7 +179,7 @@ var fluid = fluid || require("infusion"),
             freq: freq,
             phase: phase
         };
-        var imp = flock.parse.ugenForDef(impulseDef),
+        var imp = flock.parse.ugenForDef(impulseDef, environment),
             numSamps = sampleRate;
 
         imp.output = new Float32Array(numSamps);

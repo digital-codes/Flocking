@@ -90,7 +90,7 @@ var fluid = fluid || require("infusion"),
                 buffer: "honey"
             },
 
-            members: {
+            model: {
                 audioSettings: {
                     // Ensure we're generating a large enough buffer to get some sound.
                     blockSize: 2048

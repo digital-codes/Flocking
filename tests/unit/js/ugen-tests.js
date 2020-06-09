@@ -48,9 +48,11 @@ var fluid = fluid || require("infusion"),
     flock.test.ugen.interpolation.runTests = function (testSpecs) {
         fluid.each(testSpecs, function (testSpec) {
             QUnit.test(testSpec.interpolator, function () {
-                var ugen = flock.test.ugen.mock.make(new Float32Array(64), undefined, {
-                    interpolation: testSpec.interpolator
-                });
+                var ugen = flock.test.ugen.mock.make(environment,
+                    new Float32Array(64), undefined, {
+                        interpolation: testSpec.interpolator
+                    }
+                );
 
                 QUnit.equal(ugen.interpolate, testSpec.expected,
                     "The ugen should have been assigned the " + testSpec.interpolator + " interpolator.");
@@ -129,7 +131,7 @@ var fluid = fluid || require("infusion"),
     });
 
     QUnit.test("input() data type tests", function () {
-        var mockUGen = flock.test.ugen.mock.make(new Float32Array(64));
+        var mockUGen = flock.test.ugen.mock.make(environment, new Float32Array(64));
 
         // Non-existent input.
         var val = mockUGen.input("cat");
@@ -260,7 +262,13 @@ var fluid = fluid || require("infusion"),
     });
 
     var mulAddUGenTest = function (mulInput, addInput, expected, msg) {
-        var ugen = flock.test.mulAdderUGen({mul: mulInput, add: addInput}, generateTestOutput());
+        var ugen = flock.test.mulAdderUGen({
+            mul: mulInput,
+            add: addInput
+        }, generateTestOutput(), {
+            enviro: environment
+        });
+
         ugen.mulAdd(10);
         QUnit.deepEqual(ugen.output, expected, msg);
     };

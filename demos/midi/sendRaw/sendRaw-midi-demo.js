@@ -216,7 +216,7 @@
         }
 
         // Stop any currently-queued MIDI commands prior to sending new ones.
-        that.enviro.scheduler.clearAll();
-        that.enviro.scheduler.schedule(commandScore);
+        that.environment.scheduler.clearAll();
+        that.environment.scheduler.schedule(commandScore);
     };
 }());

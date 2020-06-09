@@ -49,7 +49,7 @@ var fluid = fluid || require("infusion"),
 
         lineDef.inputs.duration = 64 / sampleRate; // 64 samples.
 
-        return flock.parse.ugenForDef(lineDef);
+        return flock.parse.ugenForDef(lineDef, module.environment);
     };
 
     flock.test.ugen.line.runTests = function (module) {
@@ -124,7 +124,7 @@ var fluid = fluid || require("infusion"),
         asrDef.inputs.attack = 1 / (sampleRate / 63);
         asrDef.inputs.release = 1 / (sampleRate / 63);
 
-        return flock.parse.ugenForDef(asrDef);
+        return flock.parse.ugenForDef(asrDef, module.environment);
     };
 
     flock.test.ugen.asr.testEnvelopeStage = function (buffer, numSamps, expectedStart, expectedEnd, stageName) {
@@ -235,7 +235,7 @@ var fluid = fluid || require("infusion"),
                 release: 0
             };
 
-            var asr = flock.parse.ugenForDef(squareASRDef);
+            var asr = flock.parse.ugenForDef(squareASRDef, module.environment);
             asr.gen(64);
             flock.test.arraySilent(asr.output,
                 "Before the gate has been opened, the output should be silent");

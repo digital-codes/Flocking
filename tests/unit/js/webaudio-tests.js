@@ -213,7 +213,7 @@ var fluid = fluid || require("infusion"),
             addToEnvironment: false
         });
 
-        QUnit.equal(synth.audioSettings.rates.audio,
+        QUnit.equal(synth.model.audioSettings.rates.audio,
             environment.audioSystem.context.sampleRate,
             "And newly instantiated synths receive the correct sample rate.");
 

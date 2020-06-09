@@ -361,10 +361,13 @@ var fluid = fluid || require("infusion"),
     };
 
     fluid.defaults("flock.test.synth.testEnvironment", {
-        gradeNames: "flock.test.testEnvironment",
+        gradeNames: [
+            "flock.composition",
+            "flock.test.testEnvironment"
+        ],
 
         members: {
-            originalSineUGen: "@expand:{that}.synth.get(sine)"
+            originalSineUGen: undefined // Set onCreate.
         },
 
         synthDef: flock.test.synthDefs.amplitudeModulation,
@@ -383,8 +386,20 @@ var fluid = fluid || require("infusion"),
             tester: {
                 type: "flock.test.synth.tester"
             }
+        },
+
+        listeners: {
+            "onCreate.getOriginalSineUGen": {
+                funcName: "flock.test.synth.testEnvironment.getOriginalSineUGen",
+                args: ["{that}", "{that}.synth"]
+            }
         }
     });
+
+    flock.test.synth.testEnvironment.getOriginalSineUGen = function (that, synth) {
+        that.originalSineUGen = synth.get("sine");
+    };
+
 
     fluid.test.runTests("flock.test.synth.testEnvironment");
 
@@ -399,6 +414,12 @@ var fluid = fluid || require("infusion"),
                 ugen: "flock.test.ugen.mock",
                 inputs: {
                     cat: 12
+                }
+            },
+
+            components: {
+                enviro: {
+                    type: "flock.silentEnviro"
                 }
             }
         });
@@ -433,6 +454,12 @@ var fluid = fluid || require("infusion"),
                             freq: 880
                         }
                     ]
+                }
+            },
+
+            components: {
+                enviro: {
+                    type: "flock.silentEnviro"
                 }
             }
         });
@@ -510,6 +537,12 @@ var fluid = fluid || require("infusion"),
                         phase: 0.1
                     }
                 ]
+            },
+
+            components: {
+                enviro: {
+                    type: "flock.silentEnviro"
+                }
             }
         });
 
@@ -569,7 +602,13 @@ var fluid = fluid || require("infusion"),
 
     jqUnit.test("Get multiple input values", function () {
         var synth = flock.synth({
-            synthDef: flock.test.synthDefs.amplitudeModulation
+            synthDef: flock.test.synthDefs.amplitudeModulation,
+
+            components: {
+                enviro: {
+                    type: "flock.silentEnviro"
+                }
+            }
         });
 
         var expected = {
@@ -599,7 +638,13 @@ var fluid = fluid || require("infusion"),
 
     jqUnit.test("Set multiple input values", function () {
         var synth = flock.synth({
-            synthDef: flock.test.synthDefs.amplitudeModulation
+            synthDef: flock.test.synthDefs.amplitudeModulation,
+
+            components: {
+                enviro: {
+                    type: "flock.silentEnviro"
+                }
+            }
         });
 
         var actual = synth.set({
@@ -638,7 +683,13 @@ var fluid = fluid || require("infusion"),
         fluid.each(testSpecs, function (testSpec) {
             jqUnit.test(testSpec.name, function () {
                 var synth = flock.synth({
-                    synthDef: flock.test.synthDefs.amplitudeModulation
+                    synthDef: flock.test.synthDefs.amplitudeModulation,
+
+                    components: {
+                        enviro: {
+                            type: "flock.silentEnviro"
+                        }
+                    }
                 });
 
                 synth.set(testSpec.change);
@@ -683,7 +734,13 @@ var fluid = fluid || require("infusion"),
 
     flock.test.synth.inputTests.runUGenCountTests = function (testSpec) {
         var synth = flock.synth({
-            synthDef: testSpec.synthDef
+            synthDef: testSpec.synthDef,
+
+            components: {
+                enviro: {
+                    type: "flock.silentEnviro"
+                }
+            }
         });
 
         for (var i = 0; i < testSpec.tests.length; i++) {
@@ -740,7 +797,13 @@ var fluid = fluid || require("infusion"),
 
     jqUnit.test("Getting and setting ugen-specified special inputs.", function () {
         var s = flock.synth({
-            synthDef: flock.test.synthDefs.sequencer
+            synthDef: flock.test.synthDefs.sequencer,
+
+            components: {
+                enviro: {
+                    type: "flock.silentEnviro"
+                }
+            }
         });
 
         var seqUGen = s.get("seq");
@@ -760,6 +823,12 @@ var fluid = fluid || require("infusion"),
         var s = flock.synth({
             synthDef: {
                 ugen: "flock.ugen.sinOsc"
+            },
+
+            components: {
+                enviro: {
+                    type: "flock.silentEnviro"
+                }
             }
         });
 

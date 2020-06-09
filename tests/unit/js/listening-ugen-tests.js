@@ -47,7 +47,7 @@ var fluid = fluid || require("infusion"),
     };
 
     QUnit.test("Constant value source input.", function () {
-        var tracker = flock.parse.ugenForDef(ampConstSignalDef);
+        var tracker = flock.parse.ugenForDef(ampConstSignalDef, environment);
         generateAndTestContinuousSamples(tracker, 64);
         // TODO: Why does an attack time of 0.00001 result in a ramp-up time of three samples, instead of just less than half a sample?
         QUnit.deepEqual(flock.copyBuffer(tracker.output, 3, 64), flock.generateBufferWithValue(61, 1.0),
@@ -70,7 +70,7 @@ var fluid = fluid || require("infusion"),
     };
 
     QUnit.test("Changing value source input.", function () {
-        var tracker = flock.parse.ugenForDef(ampDescendingLine);
+        var tracker = flock.parse.ugenForDef(ampDescendingLine, environment);
 
         var controlPeriods = Math.round(sampleRate / 64),
             i;

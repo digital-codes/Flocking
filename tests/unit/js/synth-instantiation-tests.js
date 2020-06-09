@@ -15,7 +15,16 @@ var fluid = fluid || require("infusion"),
 (function () {
     "use strict";
 
-    var QUnit = fluid.registerNamespace("QUnit");
+    var QUnit = fluid.registerNamespace("QUnit"),
+        enviro;
+
+    QUnit.begin(function () {
+        enviro = flock.silentEnviro();
+    });
+
+    QUnit.done(function () {
+        enviro.destroy();
+    });
 
     QUnit.module("Synth instantiation tests");
 

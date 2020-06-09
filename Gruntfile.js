@@ -15,18 +15,28 @@ module.exports = function(grunt) {
 
         infusion: [
             "node_modules/infusion/src/framework/core/js/Fluid.js",
+            "node_modules/infusion/src/framework/core/js/FluidPromises.js",
+            "node_modules/infusion/src/framework/core/js/DataSource.js",
             "node_modules/infusion/src/framework/core/js/FluidDebugging.js",
             "node_modules/infusion/src/framework/core/js/FluidIoC.js",
             "node_modules/infusion/src/framework/core/js/DataBinding.js",
+            "node_modules/infusion/src/framework/core/js/js/RemoteModel.js",
             "node_modules/infusion/src/framework/core/js/ModelTransformation.js",
             "node_modules/infusion/src/framework/core/js/ModelTransformationTransforms.js",
+            "node_modules/infusion/src/framework/core/js/MessageResolver.js",
+            "node_modules/infusion/src/framework/core/js/ResourceLoader.js",
+            "node_modules/infusion/src/framework/core/js/ResourceLoader-browser.js",
             "node_modules/infusion/src/framework/enhancement/js/ContextAwareness.js"
         ],
 
         infusionViews: [
             "node_modules/infusion/src/framework/core/js/FluidDocument.js",
             "node_modules/infusion/src/framework/core/js/FluidDOMUtilities.js",
-            "node_modules/infusion/src/framework/core/js/FluidView.js"
+            "node_modules/infusion/src/framework/core/js/FluidView.js",
+            "node_modules/infusion/src/framework/core/js/FluidView-browser.js",
+            "node_modules/infusion/src/framework/core/js/NewViewSupport.js",
+            "node_modules/infusion/src/framework/core/js/MutationObserver.js",
+            "node_modules/infusion/src/framework/core/js/TextNodeParser.js"
         ],
 
         miscDeps: [
@@ -41,6 +51,9 @@ module.exports = function(grunt) {
         flockingBase: [
             "src/core.js",
             "src/node-list.js",
+            "src/base-audio-system.js",
+            "src/bus-manager.js",
+            "src/enviro.js",
             "src/evaluators.js",
             "src/synths/*.js",
             "src/buffers.js",

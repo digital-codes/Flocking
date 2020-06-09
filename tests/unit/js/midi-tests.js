@@ -158,10 +158,12 @@ var fluid = fluid || require("infusion"),
 
     flock.test.midi.midiFreqUGenTests.run = function () {
         jqUnit.test("12TET/A440, constant rate messageSpec", function () {
+            var environment = flock.silentEnviro();
+
             var midiFreq = flock.parse.ugenDef({
                 ugen: "flock.ugen.midiFreq",
                 note: 60
-            });
+            }, environment);
 
             flock.test.midi.midiFreqUGenTests.testNotesControl(midiFreq, [
                 {
@@ -183,6 +185,8 @@ var fluid = fluid || require("infusion"),
         });
 
         jqUnit.test("12TET/A440, control rate messageSpec", function () {
+            var environment = flock.silentEnviro();
+
             var midiFreq = flock.parse.ugenDef({
                 ugen: "flock.ugen.midiFreq",
                 note: {
@@ -191,7 +195,7 @@ var fluid = fluid || require("infusion"),
                     values: [21, 22, 23],
                     freq: 10000
                 }
-            });
+            }, environment);
 
             flock.test.midi.midiFreqUGenTests.testNotesControl(midiFreq, [
                 {

@@ -41,6 +41,10 @@ flock = fluid.registerNamespace("flock");
         },
 
         components: {
+            enviro: {
+                type: "flock.silentEnviro"
+            },
+
             synth: {
                 type: "flock.synth",
                 options: {
@@ -162,6 +166,11 @@ flock = fluid.registerNamespace("flock");
 
     jqUnit.test("flock.synth.value value updates", function () {
         var synth = flock.synth.value({
+            components: {
+                enviro: {
+                    type: "flock.silentEnviro"
+                }
+            },
             synthDef: flock.test.synthDefs.sequencer
         });
 

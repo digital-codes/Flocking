@@ -33,8 +33,9 @@ var fluid = fluid || require("infusion"),
         modelListeners: {
             "inputs": [
                 {
+                    excludeSource: "init",
                     funcName: "flock.modelSynth.updateUGens",
-                    args: ["{that}.set", "{that}.options.ugens", "{change}"]
+                    args: ["{that}.set", "{that}.out", "{change}"]
                 }
             ]
         },
@@ -43,13 +44,29 @@ var fluid = fluid || require("infusion"),
             generate: {
                 funcName: "flock.evaluate.synthModel"
             }
+        },
+
+        listeners: {
+            "onCreate.pushModelToUGens": {
+                priority: "after:makeUGens",
+                funcName: "flock.modelSynth.pushModelToUGens",
+                args: [
+                    "{that}.set",
+                    "{that}.out",
+                    "{that}.model.inputs"
+                ]
+            }
         }
     });
 
-    flock.modelSynth.updateUGens = function (set, ugens, change) {
+    flock.modelSynth.pushModelToUGens = function (set, ugens, model) {
         var changeSpec = {};
-        flock.modelSynth.flattenModel("", change.value, changeSpec);
+        flock.modelSynth.flattenModel("", model, changeSpec);
         set(changeSpec);
+    };
+
+    flock.modelSynth.updateUGens = function (set, ugens, change) {
+        flock.modelSynth.pushModelToUGens(set, ugens, change.value);
     };
 
     flock.modelSynth.shouldFlattenValue = function (value) {

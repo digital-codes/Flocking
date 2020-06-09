@@ -20,7 +20,7 @@ var fluid = fluid || require("infusion"),
 
     fluid.registerNamespace("flock.test.envGen");
 
-    flock.test.module({
+    var module = flock.test.module({
         name: "Envelope validity"
     });
 
@@ -71,7 +71,7 @@ var fluid = fluid || require("infusion"),
             flock.parse.ugenDef({
                 ugen: "flock.ugen.envGen",
                 envelope: envelope
-            });
+            }, module.environment);
 
             QUnit.ok(true, "The " + name + " envelope is valid.");
         } catch (e){

@@ -31,6 +31,12 @@ var fluid = fluid || require("infusion"),
             };
 
         var normalizerSynth = flock.synth({
+            components: {
+                enviro: {
+                    type: "flock.silentEnviro"
+                }
+            },
+
             synthDef: {
                 id: "normalizer",
                 ugen: "flock.ugen.normalize",

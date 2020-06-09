@@ -68,7 +68,7 @@ Here is an example of an HTML page that uses Flocking, which you can use as a te
         //  1. our sinewaver instrument (defined above)
         //  2. an instance of the Flocking environment
         components: {
-            environment: {
+            enviro: {
                 type: "flock.enviro"
             },
 

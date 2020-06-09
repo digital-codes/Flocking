@@ -248,7 +248,13 @@ var fluid = fluid || require("infusion"),
 
     var testRemoval = function (synthDef, testSpecs) {
         var synth = flock.synth({
-            synthDef: synthDef
+            synthDef: synthDef,
+
+            components: {
+                enviro: {
+                    type: "flock.silentEnviro"
+                }
+            }
         });
 
         fluid.each(testSpecs, function (spec) {
@@ -344,7 +350,13 @@ var fluid = fluid || require("infusion"),
 
     QUnit.test("flock.ugenNodeList.replace(): reattach inputs", function () {
         var synth = flock.synth({
-            synthDef: nestedSynthDef
+            synthDef: nestedSynthDef,
+
+            components: {
+                enviro: {
+                    type: "flock.silentEnviro"
+                }
+            }
         });
 
         var toReplace = synth.nodeList.namedNodes.gerbil,
@@ -352,7 +364,7 @@ var fluid = fluid || require("infusion"),
             newUGen = flock.parse.ugenForDef({
                 id: "gerbil",
                 ugen: "flock.test.ugen.mock"
-            });
+            }, synth.enviro);
         flock.ugenNodeList.swapTree(synth.nodeList, newUGen, toReplace);
 
         QUnit.equal(synth.nodeList.namedNodes.gerbil, newUGen,

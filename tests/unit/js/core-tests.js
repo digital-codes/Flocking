@@ -82,118 +82,10 @@ var fluid = fluid || require("infusion"),
     };
 
 
-    flock.test.module({
-        name: "Typed array merging"
-    });
+    QUnit.module("Typed array merging");
 
     QUnit.test("Component defaults", flock.test.core.typedArrayMerging.componentDefaults);
     QUnit.test("Component options", flock.test.core.typedArrayMerging.componentOptions);
-
-
-    /******************************
-     * Audio Merging and Clamping *
-     ******************************/
-
-    fluid.defaults("flock.test.core.options", {
-        gradeNames: "flock.test.module",
-
-        name: "Options clamping and merging",
-
-        enviroOptions: {
-            components: {
-                audioSystem: {
-                    options: {
-                        model: {
-                            chans: 64,
-                            numInputBuses: 128
-                        }
-                    }
-                }
-            }
-        },
-
-        invokers: {
-            testClampTooLargeValues: {
-                funcName: "flock.test.core.options.testClampTooLargeValues",
-                args: ["{that}.environment"]
-            }
-        }
-    });
-
-    flock.test.core.options.testClampTooLargeValues = function (environment) {
-        QUnit.expect(3);
-
-        var audioSystemDefaults = fluid.defaults("flock.audioSystem"),
-            defaultInputBusRange = audioSystemDefaults.inputBusRange,
-            defaultMaxChans = audioSystemDefaults.channelRange.max;
-        QUnit.ok(environment.audioSystem.model.chans <= defaultMaxChans,
-            "The environment's number of channels should be clamped at " + defaultMaxChans);
-        QUnit.equal(environment.audioSystem.model.numInputBuses, defaultInputBusRange.max,
-            "The environment's number of input buses should be clamped at " + defaultInputBusRange.max);
-        QUnit.ok(environment.audioSystem.model.numInputBuses >= defaultInputBusRange.min,
-            "The environment should have at least " + defaultInputBusRange.min + " input buses.");
-    };
-
-    flock.test.core.options.testClamping = function () {
-        QUnit.expect(5);
-
-        var enviro = flock.init({
-            chans: 64,
-            numInputBuses: 128
-        });
-
-        var audioSystemDefaults = fluid.defaults("flock.audioSystem"),
-            defaultInputBusRange = audioSystemDefaults.inputBusRange,
-            defaultMaxChans = audioSystemDefaults.channelRange.max;
-        QUnit.ok(enviro.audioSystem.model.chans <= defaultMaxChans,
-            "The environment's number of channels should be clamped at " + defaultMaxChans);
-        QUnit.equal(enviro.audioSystem.model.numInputBuses, defaultInputBusRange.max,
-            "The environment's number of input buses should be clamped at " + defaultInputBusRange.max);
-        QUnit.ok(enviro.audioSystem.model.numInputBuses >= defaultInputBusRange.min,
-            "The environment should have at least " + defaultInputBusRange.min + " input buses.");
-        enviro.destroy();
-
-        enviro = flock.init({
-            chans: 1,
-            numBuses: 1
-        });
-        QUnit.ok(enviro.audioSystem.model.numBuses >= 2,
-            "The environment should always have two or more buses.");
-        enviro.destroy();
-
-        enviro = flock.init({
-            chans: 8,
-            numBuses: 4
-        });
-        QUnit.ok(enviro.audioSystem.model.numBuses >= enviro.audioSystem.model.chans,
-            "The environment should always have at least as many buses as channels.");
-        enviro.destroy();
-    };
-
-    flock.test.core.options.testMerging = function () {
-        QUnit.expect(3);
-
-        var enviro = flock.init({
-            numBuses: 24,
-            chans: 1
-        });
-
-        var expectedNumChans = !flock.platform.browser.safari ? 1 : enviro.audioSystem.context.destination.channelCount;
-        QUnit.equal(enviro.audioSystem.model.chans, expectedNumChans,
-            "The environment should have been configured with the specified chans option (except on Safari).");
-
-        QUnit.equal(enviro.audioSystem.model.numBuses, 24,
-            "The environment should have been configured with the specified number of buses");
-
-        QUnit.equal(enviro.busManager.buses.length, 24,
-            "The environment should actually have the specified number of buses.");
-        enviro.destroy();
-    };
-
-    var module = flock.test.core.options();
-    QUnit.test("Large values should be clamped down", module.testClampTooLargeValues);
-    QUnit.test("Options clamping", flock.test.core.options.testClamping);
-    QUnit.test("Options merging", flock.test.core.options.testMerging);
 
 
     /*************************
@@ -215,11 +107,8 @@ var fluid = fluid || require("infusion"),
         flock.test.signalInRange(buf, -12.0, 2.0);
     };
 
-    module = flock.test.module({
-        name: "Random number generating functions"
-    });
+    QUnit.module("Random number generating functions");
 
     QUnit.test("flock.randomAudioValue", flock.test.core.randomGenerators.randomAudioValue);
     QUnit.test("flock.randomValue", flock.test.core.randomGenerators.randomValue);
-
 }());

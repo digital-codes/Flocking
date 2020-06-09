@@ -167,7 +167,7 @@ var fluid = fluid || require("infusion"),
             "onStart.connect": "{that}.connect()",
 
             "onConnect.connectMergerNode": {
-                "this": "{merger}.node",
+                "this": "{that}.merger.node",
                 method: "connect",
                 args: ["{scriptProcessor}.node"]
             },
@@ -193,7 +193,7 @@ var fluid = fluid || require("infusion"),
             },
 
             "onDisconnectNodes.disconnectMergerNode": {
-                "this": "{merger}.node",
+                "this": "{that}.merger.node",
                 method: "disconnect",
                 args: [0]
             },

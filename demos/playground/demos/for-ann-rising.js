@@ -1,9 +1,11 @@
+/*global playground*/
+
 // James Tenney's For Ann Rising.
 
 // Outside of the Playground, you'll need to
 // specify a flock.enviro.withScheduler or
 // define your own Scheduler.
-var scheduler = flock.environment.scheduler,
+var scheduler = playground.enviro.scheduler,
     numSynths = 240,
     synths = [];
 

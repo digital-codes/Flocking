@@ -17,9 +17,7 @@ var fluid = fluid || require("infusion"),
 
     var QUnit = fluid.registerNamespace("QUnit");
 
-    var $ = fluid.registerNamespace("jQuery"),
-        environment = flock.silentEnviro(),
-        sampleRate = environment.audioSystem.model.rates.audio;
+    var $ = fluid.registerNamespace("jQuery");
 
     QUnit.module("flock.ugen.t2a");
 
@@ -31,11 +29,18 @@ var fluid = fluid || require("infusion"),
             source: {
                 ugen: "flock.ugen.impulse",
                 rate: "control",
-                freq: sampleRate,
+                freq: {
+                    ugen: "flock.ugen.sampleRate"
+                },
                 phase: 1.0
             }
         };
         var synth = flock.synth({
+            components: {
+                enviro: {
+                    type: "flock.silentEnviro"
+                }
+            },
             synthDef: synthDef
         });
 
@@ -57,7 +62,9 @@ var fluid = fluid || require("infusion"),
         synth.set("converter.source", {
             ugen: "flock.ugen.sequence",
             values: new Float32Array(64),
-            freq: sampleRate
+            freq: {
+                ugen: "flock.ugen.sampleRate"
+            }
         });
         flock.evaluate.synth(synth);
         QUnit.deepEqual(t2a.output, silence,
@@ -230,6 +237,4 @@ var fluid = fluid || require("infusion"),
     ];
 
     runTriggerCallbackTests(triggerCallbackTestSpecs);
-
-    environment.destroy();
 }());

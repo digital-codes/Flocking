@@ -29,28 +29,31 @@ fluid.defaults("flock.synth", {
         ugens: "nomerge"
     },
 
-    ugens: {
-        expander: {
-            funcName: "flock.makeUGens",
-            args: [
-                "{that}.options.synthDef",
-                "{that}.rate",
-                "{that}.nodeList",
-                "{that}.enviro",
-                "{that}.audioSettings"
-            ]
-        }
+    model: {
+        audioSettings: "{that}.enviro.model.audioSettings"
     },
 
     members: {
         rate: "{that}.options.rate",
-        audioSettings: "{that}.enviro.audioSystem.model", // TODO: Move this.
-        nodeList: "@expand:flock.nodeList()",
-        out: "{that}.options.ugens"
+        nodeList: "@expand:flock.ugenNodeList()",
+        out: undefined // Assigned onCreate
     },
 
-    model: {
-        blockSize: "@expand:flock.synth.calcBlockSize({that}.rate, {that}.enviro.audioSystem.model)"
+    modelRelay: {
+        target: "blockSize",
+        singleTransform: {
+            type: "fluid.transforms.condition",
+            condition: {
+                transform: {
+                    type: "fluid.transforms.binaryOp",
+                    left: "{that}.options.rate",
+                    right: flock.rates.AUDIO,
+                    operator: "==="
+                }
+            },
+            true: "{that}.model.audioSettings.blockSize",
+            false: 1
+        }
     },
 
     invokers: {
@@ -82,15 +85,21 @@ fluid.defaults("flock.synth", {
             funcName: "flock.evaluate.synth",
             args: ["{that}"]
         }
+    },
+
+    listeners: {
+        "onCreate.makeUGens": {
+            funcName: "flock.synth.makeUGens",
+            args: [
+                "{that}"
+            ]
+        }
     }
 });
 
-flock.synth.createUGenTree = function (synthDef, rate, enviro) {
-    return new flock.UGenTree(synthDef, rate, enviro);
-};
-
-flock.synth.calcBlockSize = function (rate, audioSettings) {
-    return rate === flock.rates.AUDIO ? audioSettings.blockSize : 1;
+flock.synth.makeUGens = function (that) {
+    that.out = flock.makeUGens(that.options.synthDef, that.options.rate,
+        that.nodeList, that.enviro, that.model.audioSettings);
 };
 
 flock.synth.set = function (that, namedNodes, path, val, swap) {
@@ -115,7 +124,7 @@ flock.synth.ugenValueParser = function (that, ugenDef, prev, swap) {
     }
 
     var parsed = flock.parse.ugenDef(ugenDef, that.enviro, {
-        audioSettings: that.audioSettings,
+        audioSettings: that.model.audioSettings,
         buses: that.enviro.busManager.buses,
         buffers: that.enviro.buffers
     });

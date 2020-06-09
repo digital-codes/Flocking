@@ -23,6 +23,11 @@ var fluid = fluid || require("infusion"),
 
     flock.test.synth.testNoteEvents = function (testSpec) {
         var baseOpts = {
+            components: {
+                enviro: {
+                    type: "flock.silentEnviro"
+                }
+            },
             synthDef: {
                 id: "carrier",
                 ugen: "flock.ugen.sinOsc",

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Simple Flocking Synth Demo</title>
+        <meta charset="UTF-8" />
+        <link rel="stylesheet" type="text/css" href="../shared/css/demos.css" />
+        <link rel="stylesheet" type="text/css" href="../../src/ui/shared/css/flocking-icon-font.css" />
+        <link rel="stylesheet" type="text/css" href="../../src/ui/play-button/css/play-button.css" />
+
+        <script src="../../dist/flocking-all.js"></script>
+        <script src="../../src/ui/play-button/js/play-button.js"></script>
+        <script src="simple-synth.js"></script>
+    </head>
+    <body>
+        <button id="play">Play</button>
+        <script>
+            window.simpleSynthDemo = flock.demo.simpleSynth();
+        </script>
+    </body>
+</html>

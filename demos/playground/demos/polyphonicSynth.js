@@ -1,3 +1,5 @@
+/*global playground*/
+
 var fundamental = 440;
 
 var polySynth = flock.synth.polyphonic({
@@ -61,7 +63,7 @@ var score = [
 // specify a flock.enviro.withScheduler or
 // define your own Scheduler.
 var idx = 0;
-flock.environment.scheduler.schedule({
+playground.enviro.scheduler.schedule({
     type: "repeat",
     interval: 0.5,
     callback: function () {

@@ -18,7 +18,7 @@ fluid.defaults("flock.synth.frameRate", {
 
     fps: 60,
 
-    members: {
+    model: {
         audioSettings: {
             rates: {
                 scheduled: "{that}.options.fps"

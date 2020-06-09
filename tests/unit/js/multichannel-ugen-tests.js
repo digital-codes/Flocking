@@ -17,6 +17,8 @@ var fluid = fluid || require("infusion"),
 
     var QUnit = fluid.registerNamespace("QUnit");
 
+    var environment = flock.silentEnviro();
+
     fluid.registerNamespace("flock.tests");
 
     QUnit.module("Multichannel tests");
@@ -46,7 +48,9 @@ var fluid = fluid || require("infusion"),
         ugenOptions: {
             numOutputs: 2,
             tags: ["flock.ugen.multiChannelOutput"]
-        }
+        },
+
+        enviro: environment
     });
 
     QUnit.test("Multichannel unit generator creation", function () {
@@ -57,7 +61,7 @@ var fluid = fluid || require("infusion"),
             }
         });
 
-        testMultichannelUGen(synth.get("actual"), 2, synth.audioSettings.blockSize);
+        testMultichannelUGen(synth.get("actual"), 2, synth.model.audioSettings.blockSize);
     });
 
     flock.tests.mockMultiInputUGen = genericUGenCreatorFn;

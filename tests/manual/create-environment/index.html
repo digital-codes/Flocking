@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Flocking Environment Creation</title>
+        <meta charset="UTF-8" />
+        <link rel="stylesheet" type="text/css" href="../../../demos/shared/css/demos.css"/>
+        <link rel="stylesheet" type="text/css" href="../../../src/ui/shared/css/flocking-icon-font.css" />
+        <link rel="stylesheet" type="text/css" href="../../../src/ui/play-button/css/play-button.css" />
+
+        <script src="../../../dist/flocking-all.js"></script>
+        <script src="../../../src/ui/play-button/js/play-button.js"></script>
+        <script src="create-environment.js"></script>
+    </head>
+    <body>
+        <button id="play">Play</button>
+        <script>
+            window.environmentCreator = flock.test.environmentCreator();
+        </script>
+    </body>
+</html>

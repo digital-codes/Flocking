@@ -200,7 +200,7 @@ At an even lower level of abstraction, you can manually load and decode audio fi
 If you want to share a buffer that you've loaded by hand amongst unit multiple generators, you'll want to give it an ID and register it with the Flocking environment:
 
     buffer.id = "meow";
-    environment.registerBuffer(buffer);
+    enviro.registerBuffer(buffer);
 
 
 ## Buffer Descriptions ##

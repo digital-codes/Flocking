@@ -13,7 +13,7 @@ var flock = flock || {};
 (function () {
     "use strict";
 
-    flock.init({
+    var enviro = flock.init({
         numBuses: 10
     });
 
@@ -34,7 +34,7 @@ var flock = flock || {};
                     input = inputs[i];
                     inputName = typeof (input) === "string" ? input : input.name;
                     randomized = flock.test.ugen.mock.makeRandomInputGenerator(input, input.scale, input.round);
-                    ug.inputs[inputName] = flock.test.ugen.mock.make(randomized, rate);
+                    ug.inputs[inputName] = flock.test.ugen.mock.make(enviro, randomized, rate);
                 }
 
                 ug.onInputChanged();
