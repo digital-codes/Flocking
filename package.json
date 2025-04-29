@@ -28,7 +28,7 @@
     "grunt-contrib-copy": "1.0.0",
     "grunt-contrib-jshint": "3.2.0",
     "sheep-benchmark": "colinbdclark/sheep.js",
-    "requirejs": "2.3.6",
+    "requirejs": "2.3.7",
     "testem": "3.6.0"
   },
   "dependencies": {
